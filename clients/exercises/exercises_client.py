@@ -1,24 +1,16 @@
 from typing import TypedDict
-
 from httpx import Response
-
 from clients.api_client import APIClient
-
 from clients.private_http_builder import AuthenticationUserDict, get_private_http_client
 
 
-
 class GetExercisesQueryDict(TypedDict):
-    """
-    Описание структуры запроса на получение списка заданий.
-    """
+    """Описание структуры параметров запроса списка упражнений."""
     courseId: str
 
 
 class CreateExerciseRequestDict(TypedDict):
-    """
-    Описание структуры запроса на создание задания.
-    """
+    """Описание структуры запроса на создание упражнения."""
     title: str
     courseId: str
     maxScore: int
@@ -29,9 +21,7 @@ class CreateExerciseRequestDict(TypedDict):
 
 
 class UpdateExerciseRequestDict(TypedDict):
-    """
-    Описание структуры запроса на обновление задания.
-    """
+    """Описание структуры запроса на обновление упражнения."""
     title: str | None
     maxScore: int | None
     minScore: int | None
@@ -41,13 +31,12 @@ class UpdateExerciseRequestDict(TypedDict):
 
 
 class ExercisesClient(APIClient):
-    """
-    Клиент для работы с /api/v1/exercises
-    """
+    """Клиент для работы с /api/v1/exercises"""
+
+    # --- Низкоуровневые методы (_api) ---
 
     def get_exercises_api(self, query: GetExercisesQueryDict) -> Response:
-        """
-        Метод получения списка заданий.
+        """Метод получения списка заданий.
 
         :param query: Словарь с courseId.
         :return: Ответ от сервера в виде объекта httpx.Response
@@ -55,8 +44,7 @@ class ExercisesClient(APIClient):
         return self.get("/api/v1/exercises", params=query)
 
     def get_exercise_api(self, exercise_id: str) -> Response:
-        """
-        Метод получения задания.
+        """Метод получения задания.
 
         :param exercise_id: Идентификатор задания.
         :return: Ответ от сервера в виде объекта httpx.Response
@@ -64,46 +52,73 @@ class ExercisesClient(APIClient):
         return self.get(f"/api/v1/exercises/{exercise_id}")
 
     def create_exercise_api(self, request: CreateExerciseRequestDict) -> Response:
-        """
-        Метод создания задания.
+        """Метод создания задания.
 
-        :param request: Словарь с title, courseId, maxScore, minScore, orderIndex, description, estimatedTime.
+        :param request: Словарь с данными задания.
         :return: Ответ от сервера в виде объекта httpx.Response
         """
         return self.post("/api/v1/exercises", json=request)
 
     def update_exercise_api(self, exercise_id: str, request: UpdateExerciseRequestDict) -> Response:
-        """
-        Метод обновления задания.
+        """Метод обновления задания.
 
         :param exercise_id: Идентификатор задания.
-        :param request: Словарь с title, maxScore, minScore, orderIndex, description, estimatedTime.
+        :param request: Словарь с обновляемыми полями задания.
         :return: Ответ от сервера в виде объекта httpx.Response
         """
         return self.patch(f"/api/v1/exercises/{exercise_id}", json=request)
 
     def delete_exercise_api(self, exercise_id: str) -> Response:
-        """
-        Метод удаления задания.
+        """Метод удаления задания.
 
         :param exercise_id: Идентификатор задания.
         :return: Ответ от сервера в виде объекта httpx.Response
         """
         return self.delete(f"/api/v1/exercises/{exercise_id}")
 
+    # --- Высокоуровневые методы ---
+
+    def get_exercises(self, query: GetExercisesQueryDict) -> dict:
+        """Метод получает список заданий и автоматически возвращает распакованный JSON.
+
+        :param query: Словарь с courseId.
+        :return: Распакованный JSON-ответ от сервера.
+        """
+        response = self.get_exercises_api(query)
+        return response.json()
+
+    def get_exercise(self, exercise_id: str) -> dict:
+        """Метод получает конкретное задание и автоматически возвращает распакованный JSON.
+
+        :param exercise_id: Идентификатор задания.
+        :return: Распакованный JSON-ответ от сервера.
+        """
+        response = self.get_exercise_api(exercise_id)
+        return response.json()
 
     def create_exercise(self, request: CreateExerciseRequestDict) -> dict:
-        """Метод создает задание и автоматически возвращает распакованный JSON."""
+        """Метод создает задание и автоматически возвращает распакованный JSON.
+
+        :param request: Словарь с данными задания.
+        :return: Распакованный JSON-ответ от сервера.
+        """
         response = self.create_exercise_api(request)
+        return response.json()
+
+    def update_exercise(self, exercise_id: str, request: UpdateExerciseRequestDict) -> dict:
+        """Метод обновляет задание и автоматически возвращает распакованный JSON.
+
+        :param exercise_id: Идентификатор задания.
+        :param request: Словарь с обновляемыми полями.
+        :return: Распакованный JSON-ответ от сервера.
+        """
+        response = self.update_exercise_api(exercise_id, request)
         return response.json()
 
 
 def get_exercises_client(user: AuthenticationUserDict) -> ExercisesClient:
-
     """Функция создаёт экземпляр ExercisesClient с уже настроенным HTTP-клиентом.
 
     :return: Готовый к использованию ExercisesClient.
-        """
+    """
     return ExercisesClient(client=get_private_http_client(user))
-
-
