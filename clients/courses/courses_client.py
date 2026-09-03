@@ -1,3 +1,4 @@
+
 # from typing import TypedDict, Optional
 # from httpx import Response
 # from clients.api_client import APIClient
@@ -81,6 +82,7 @@
 # def get_courses_client(user: AuthenticationUserDict) -> CoursesClient:
 #     """Функция создаёт экземпляр CoursesClient с уже настроенным HTTP-клиентом."""
 #     return CoursesClient(client=get_private_http_client(user))
+
 
 
 from httpx import Response

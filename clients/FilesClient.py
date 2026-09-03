@@ -1,3 +1,4 @@
+
 # from typing import TypedDict
 #
 # from httpx import Response
@@ -75,6 +76,7 @@
 #     """
 #     return FilesClient(client=get_private_http_client(user))
 #
+
 from httpx import Response
 
 from clients.api_client import APIClient

@@ -1,3 +1,4 @@
+
 # from typing import TypedDict
 #
 # from httpx import Response
@@ -73,7 +74,6 @@
 #     :return: Готовый к использованию AuthenticationClient.
 #     """
 #     return AuthenticationClient(client=get_public_http_client())
-
 
 from httpx import Response
 

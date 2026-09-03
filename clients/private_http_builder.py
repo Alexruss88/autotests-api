@@ -1,3 +1,4 @@
+
 # from typing import TypedDict
 #
 # from httpx import Client
@@ -32,6 +33,7 @@
 #         # Добавляем заголовок авторизации
 #         headers={"Authorization": f"Bearer {login_response['token']['accessToken']}"}
 #     )
+
 
 
 from httpx import Client

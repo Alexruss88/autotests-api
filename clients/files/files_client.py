@@ -1,3 +1,4 @@
+
 # from typing import TypedDict
 # from httpx import Response
 # from clients.api_client import APIClient
@@ -52,6 +53,7 @@
 # def get_files_client(user: AuthenticationUserDict) -> FilesClient:
 #     """Функция создаёт экземпляр FilesClient с уже настроенным HTTP-клиентом."""
 #     return FilesClient(client=get_private_http_client(user))
+
 
 
 

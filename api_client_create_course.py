@@ -1,3 +1,4 @@
+
 # from clients.courses.CoursesClient import get_courses_client, CreateCourseRequestDict
 # from clients.FilesClient import get_files_client, CreateFileRequestDict
 # from clients.private_http_builder import AuthenticationUserDict
@@ -61,6 +62,23 @@ from tools.fakers import get_random_email
 public_users_client = get_public_users_client()
 
 # Создаём пользователя
+
+from clients.courses.courses_client import get_courses_client
+from clients.courses.courses_schema import CreateCourseRequestSchema
+from clients.exercises.exercises_client import get_exercises_client
+from clients.exercises.exercises_schema import CreateExerciseRequestSchema
+from clients.files.files_client import get_files_client
+from clients.files.files_schema import CreateFileRequestSchema
+from clients.users.public_users_client import get_public_users_client
+from clients.users.users_schema import CreateUserRequestSchema
+from clients.private_http_builder import AuthenticationUserSchema  # ← только это
+from tools.fakers import get_random_email
+
+# ... остальной код без изменений, но с использованием AuthenticationUserSchema
+
+public_users_client = get_public_users_client()
+
+
 create_user_request = CreateUserRequestSchema(
     email=get_random_email(),
     password="string",
@@ -70,7 +88,9 @@ create_user_request = CreateUserRequestSchema(
 )
 create_user_response = public_users_client.create_user(create_user_request)
 
+
 # Инициализируем объект для авторизации
+
 authentication_user = AuthenticationUserSchema(
     email=create_user_request.email,
     password=create_user_request.password
@@ -80,7 +100,9 @@ authentication_user = AuthenticationUserSchema(
 files_client = get_files_client(authentication_user)
 courses_client = get_courses_client(authentication_user)
 
+
 # Загружаем файл (изображение) через приватный клиент
+
 # Вместо CreateFileRequestDict используем CreateFileRequestSchema
 create_file_request = CreateFileRequestSchema(
     filename="image.png",
@@ -90,15 +112,18 @@ create_file_request = CreateFileRequestSchema(
 create_file_response = files_client.create_file(create_file_request)
 print('Create file data:', create_file_response)
 
+
 # Создаём курс, используя ID загруженного файла и ID созданного пользователя
+
 create_course_request = CreateCourseRequestSchema(
     title="Python",
     maxScore=100,
     minScore=10,
     description="Python API course",
     estimatedTime="2 weeks",
-    previewFileId=create_file_response.file.id,  # Используем атрибуты вместо ключей
-    createdByUserId=create_user_response.user.id  # Используем атрибуты вместо ключей
+    previewFileId=create_file_response.file.id,     # Используем атрибуты вместо ключей
+    createdByUserId=create_user_response.user.id,   # Используем атрибуты вместо ключей
 )
+
 create_course_response = courses_client.create_course(create_course_request)
 print('Create course data:', create_course_response)
